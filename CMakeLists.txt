@@ -1,11 +1,17 @@
-# Include directories for e2sim
-include_directories(/usr/local/include/e2sim)
-# Linker flags and libraries
-link_directories(/usr/local/lib)
-link_libraries(e2sim)
+# Project root is two levels up from ns-3 source directory
+set(PROJECT_ROOT "${CMAKE_SOURCE_DIR}/../..")
+set(E2SIM_INCLUDE_DIR "${PROJECT_ROOT}/install/include/e2sim")
+set(E2SIM_LIB_DIR "${PROJECT_ROOT}/install/lib")
 
-# Add ns3 include directory from build folder
+# IMPORTANT: e2sim include paths must be set globally via CMAKE_CXX_FLAGS at configure time
+# because contrib module CMakeLists.txt is processed too late for other modules (like lte)
+# To build: ./ns3 configure -- -DCMAKE_CXX_FLAGS="-I${CMAKE_SOURCE_DIR}/../../install/include/e2sim"
+# Alternatively, set via environment: export CMAKE_CXX_FLAGS="-I<project_root>/install/include/e2sim"
+
+# These are processed within this module's scope
 include_directories(${CMAKE_BINARY_DIR}/include/ns3)
+link_directories(${E2SIM_LIB_DIR})
+link_libraries(e2sim)
 
 # Define the source files
 set(source_files
@@ -53,6 +59,8 @@ build_lib(
 
 # Alternatively, create the oran-interface library manually
 add_library(oran-interface STATIC ${source_files} ${header_files})
+target_include_directories(oran-interface PUBLIC ${E2SIM_INCLUDE_DIR})
+target_link_directories(oran-interface PUBLIC ${E2SIM_LIB_DIR})
 target_link_libraries(oran-interface e2sim)
 
 # Specify the install directory for ns3 includes
