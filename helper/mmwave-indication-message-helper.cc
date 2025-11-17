@@ -76,7 +76,8 @@ MmWaveIndicationMessageHelper::AddDuUePmItem (
     long mac64Qam, long macRetx, long macVolume, long macPrb, long macMac04, long macMac59,
     long macMac1014, long macMac1519, long macMac2024, long macMac2529, long macSinrBin1,
     long macSinrBin2, long macSinrBin3, long macSinrBin4, long macSinrBin5, long macSinrBin6,
-    long macSinrBin7, long rlcBufferOccup, double drbThrDlUeid)
+    long macSinrBin7, long rlcBufferOccup, double drbThrDlUeid,
+    uint32_t servingCellId)
 {
 
   Ptr<MeasurementItemList> ueVal = Create<MeasurementItemList> (ueImsiComplete);
@@ -110,6 +111,9 @@ MmWaveIndicationMessageHelper::AddDuUePmItem (
   // ueVal->AddItem<double> ("DRB.UEThpDlPdcpBased.UEID", drbThrDlPdcpBasedUeid);
   
   ueVal->AddItem<double> ("DRB.UEThpDl.UEID", drbThrDlUeid);
+
+  // Serving cell ID for handover detection
+  ueVal->AddItem<long> ("L3.ServingCell.CellId", servingCellId);
 
   m_msgValues.m_ueIndications.insert (ueVal);
 }

@@ -49,7 +49,8 @@ public:
                       long macMac04, long macMac59, long macMac1014, long macMac1519,
                       long macMac2024, long macMac2529, long macSinrBin1, long macSinrBin2,
                       long macSinrBin3, long macSinrBin4, long macSinrBin5, long macSinrBin6,
-                      long macSinrBin7, long rlcBufferOccup, double drbThrDlUeid);
+                      long macSinrBin7, long rlcBufferOccup, double drbThrDlUeid,
+                      uint32_t servingCellId);
 
   void AddDuCellPmItem (
       long macPduCellSpecific, long macPduInitialCellSpecific, long macQpskCellSpecific,
