@@ -177,7 +177,9 @@ void
 MmWaveIndicationMessageHelper::AddCuCpUePmItem (std::string ueImsiComplete, long numDrb,
                                                 long drbRelAct,
                                                 Ptr<L3RrcMeasurements> l3RrcMeasurementServing,
-                                                Ptr<L3RrcMeasurements> l3RrcMeasurementNeigh)
+                                                Ptr<L3RrcMeasurements> l3RrcMeasurementNeigh,
+                                                long servingCellId,
+                                                double dlThroughput)
 {
 
   Ptr<MeasurementItemList> ueVal = Create<MeasurementItemList> (ueImsiComplete);
@@ -185,7 +187,18 @@ MmWaveIndicationMessageHelper::AddCuCpUePmItem (std::string ueImsiComplete, long
     {
       ueVal->AddItem<long> ("DRB.EstabSucc.5QI.UEID", numDrb);
       ueVal->AddItem<long> ("DRB.RelActNbr.5QI.UEID", drbRelAct); // not modeled in the simulator
+
+      // Phase 2: Add throughput for handover tracking
+      if (dlThroughput > 0.0)
+        {
+          ueVal->AddItem<double> ("DRB.UEThpDl", dlThroughput);
+        }
     }
+
+  // Phase 1: Add Cell ID for handover tracking (outside reducedPmValues block, like L3 RRC measurements)
+  // Always add Cell ID (even if 0) to ensure it's transmitted
+  std::cout << "[DEBUG mmWave] Adding Cell ID measurement: servingCellId=" << servingCellId << " for UE=" << ueImsiComplete << std::endl;
+  ueVal->AddItem<long> ("L3.ServingCell.CellId", servingCellId);
 
   // L3servingSINR3gpp_cell_XX
   ueVal->AddItem<Ptr<L3RrcMeasurements>> ("HO.SrcCellQual.RS-SINR.UEID", l3RrcMeasurementServing);

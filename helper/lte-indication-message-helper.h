@@ -45,7 +45,11 @@ public:
 
   void FillCuCpValues (uint16_t numActiveUes);
 
-  void AddCuCpUePmItem (std::string ueImsiComplete, long numDrb, long drbRelAct);
+  void AddCuCpUePmItem (std::string ueImsiComplete, long numDrb, long drbRelAct,
+                        Ptr<L3RrcMeasurements> l3RrcMeasurementServing,
+                        Ptr<L3RrcMeasurements> l3RrcMeasurementNeigh,
+                        long servingCellId = 0,      // Phase 1
+                        double dlThroughput = 0.0);  // Phase 2
 
 private:
 };

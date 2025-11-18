@@ -64,7 +64,9 @@ public:
   void AddDuCellResRepPmItem (Ptr<CellResourceReport> cellResRep);
   void AddCuCpUePmItem (std::string ueImsiComplete, long numDrb, long drbRelAct,
                         Ptr<L3RrcMeasurements> l3RrcMeasurementServing,
-                        Ptr<L3RrcMeasurements> l3RrcMeasurementNeigh);
+                        Ptr<L3RrcMeasurements> l3RrcMeasurementNeigh,
+                        long servingCellId = 0,
+                        double dlThroughput = 0.0);
   // void AddCuCpUePmItem (std::string ueImsiComplete, long numDrb, long drbRelAct,
   //                       Ptr<L3RrcMeasurements> l3RrcMeasurementServing,
   //                       Ptr<L3RrcMeasurements> l3RrcMeasurementNeigh, long m_cellId, long imsi,

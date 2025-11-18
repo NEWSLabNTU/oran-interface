@@ -87,7 +87,11 @@ LteIndicationMessageHelper::FillCuCpValues (uint16_t numActiveUes)
 
 void
 LteIndicationMessageHelper::AddCuCpUePmItem (std::string ueImsiComplete, long numDrb,
-                                             long drbRelAct)
+                                             long drbRelAct,
+                                             Ptr<L3RrcMeasurements> l3RrcMeasurementServing,
+                                             Ptr<L3RrcMeasurements> l3RrcMeasurementNeigh,
+                                             long servingCellId,
+                                             double dlThroughput)
 {
 
   Ptr<MeasurementItemList> ueVal = Create<MeasurementItemList> (ueImsiComplete);
@@ -95,7 +99,29 @@ LteIndicationMessageHelper::AddCuCpUePmItem (std::string ueImsiComplete, long nu
     {
       ueVal->AddItem<long> ("DRB.EstabSucc.5QI.UEID", numDrb);
       ueVal->AddItem<long> ("DRB.RelActNbr.5QI.UEID", drbRelAct); // not modeled in the simulator
+
+      // Phase 2: Add throughput for handover tracking
+      if (dlThroughput > 0.0)
+        {
+          ueVal->AddItem<double> ("DRB.UEThpDl", dlThroughput);
+        }
     }
+
+  // Phase 1: Add Cell ID for handover tracking (outside reducedPmValues block, like L3 RRC measurements)
+  // Always add Cell ID (even if 0) to ensure it's transmitted
+  std::cout << "[DEBUG LTE] Adding Cell ID measurement: servingCellId=" << servingCellId << " for UE=" << ueImsiComplete << std::endl;
+  ueVal->AddItem<long> ("L3.ServingCell.CellId", servingCellId);
+
+  // L3 RRC measurements for handover (if provided)
+  if (l3RrcMeasurementServing != nullptr)
+    {
+      ueVal->AddItem<Ptr<L3RrcMeasurements>> ("HO.SrcCellQual.RS-SINR.UEID", l3RrcMeasurementServing);
+    }
+  if (l3RrcMeasurementNeigh != nullptr)
+    {
+      ueVal->AddItem<Ptr<L3RrcMeasurements>> ("HO.TrgtCellQual.RS-SINR.UEID", l3RrcMeasurementNeigh);
+    }
+
   m_msgValues.m_ueIndications.insert (ueVal);
 }
 
