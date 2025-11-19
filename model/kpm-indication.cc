@@ -632,6 +632,15 @@ KpmIndicationMessage::getMesInfoItem (const Ptr<MeasurementItem> &mesItem,
   MeasurementType_t *measurmentType = (MeasurementType_t *) calloc (1, sizeof (MeasurementType_t));
   *measurmentType = item.pmType;
 
+  // [DEBUG CELLID] Log all measurements being processed
+  if (item.pmType.present == MeasurementType_PR_measName)
+    {
+      std::string measName = std::string(reinterpret_cast<const char*>(item.pmType.choice.measName.buf),
+                                          item.pmType.choice.measName.size);
+      std::cout << "[DEBUG ENCODE] Processing measurement: '" << measName
+                << "' (len=" << item.pmType.choice.measName.size << ")" << std::endl;
+    }
+
   if (item.pmType.present == MeasurementType_PR_measName)
     {
       switch (item.pmVal.present)

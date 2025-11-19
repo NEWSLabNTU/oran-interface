@@ -109,10 +109,11 @@ MmWaveIndicationMessageHelper::AddDuUePmItem (
 
   // This value is not requested anymore, so it has been removed from the delivery, but it will be still logged;
   // ueVal->AddItem<double> ("DRB.UEThpDlPdcpBased.UEID", drbThrDlPdcpBasedUeid);
-  
+
   ueVal->AddItem<double> ("DRB.UEThpDl.UEID", drbThrDlUeid);
 
-  // Serving cell ID for handover detection
+  // Serving cell ID for handover detection (DU report)
+  std::cout << "[DEBUG DU] Adding Cell ID measurement: servingCellId=" << servingCellId << " for UE=" << ueImsiComplete << std::endl;
   ueVal->AddItem<long> ("L3.ServingCell.CellId", servingCellId);
 
   m_msgValues.m_ueIndications.insert (ueVal);

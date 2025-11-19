@@ -38,7 +38,8 @@ LteIndicationMessageHelper::LteIndicationMessageHelper (IndicationMessageType ty
 void
 LteIndicationMessageHelper::AddCuUpUePmItem (std::string ueImsiComplete, long txBytes,
                                              long txDlPackets, double pdcpThroughput,
-                                             double pdcpLatency)
+                                             double pdcpLatency,
+                                             uint32_t servingCellId)
 {
   Ptr<MeasurementItemList> ueVal = Create<MeasurementItemList> (ueImsiComplete);
 
@@ -56,6 +57,11 @@ LteIndicationMessageHelper::AddCuUpUePmItem (std::string ueImsiComplete, long tx
       //UE-specific Downlink IP combined EN-DC throughput from LTE eNB
       ueVal->AddItem<double> ("DRB.PdcpSduDelayDl.UEID", pdcpLatency);
     }
+
+  // Phase 1: Add Cell ID for handover tracking (CU-UP report)
+  // Always add Cell ID (even if 0) to ensure it's transmitted
+  std::cout << "[DEBUG LTE CU-UP] Adding Cell ID measurement: servingCellId=" << servingCellId << " for UE=" << ueImsiComplete << std::endl;
+  ueVal->AddItem<long> ("L3.ServingCell.CellId", servingCellId);
 
   m_msgValues.m_ueIndications.insert (ueVal);
 }
