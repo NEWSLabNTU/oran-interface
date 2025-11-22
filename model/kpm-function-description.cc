@@ -186,14 +186,27 @@ KpmFunctionDescription::FillAndEncodeKpmFunctionDescription (
 report_style->ric_IndicationHeaderFormat_Type = FORMAT_1_INDICATION_HEADER;  
 report_style->ric_IndicationMessageFormat_Type = FORMAT_3_INDICATION_MESSAGE;
 /*Added RICACtionFormat*/
-report_style->ric_ActionFormat_Type = 3 ; 
-MeasurementInfo_Action_Item * meas_item = (MeasurementInfo_Action_Item *)calloc(1, sizeof(MeasurementInfo_Action_Item));
+report_style->ric_ActionFormat_Type = 3 ;
 
-  const char act[] = "DRB.RlcSduDelayDl";
+  // Phase 1: Add ALL measurements to RAN function description
+  // This allows xApp to subscribe to all measurements including Cell ID
+  const char* measurements[] = {
+    "DRB.EstabSucc.5QI.UEID",
+    "DRB.PdcpSduBitRateDl.UEID",
+    "DRB.PdcpSduDelayDl.UEID",
+    "DRB.PdcpSduVolumeDl_Filter.UEID",
+    "DRB.RelActNbr.5QI.UEID",
+    "L3.ServingCell.CellId",           // Cell ID for handover tracking!
+    "Tot.PdcpSduNbrDl.UEID",
+    "DRB.RlcSduDelayDl"                // Original measurement
+  };
 
-meas_item->measName = cp_str_to_ba(act);
-
-  ASN_SEQUENCE_ADD (&report_style->measInfo_Action_List.list, meas_item);
+  for (size_t i = 0; i < sizeof(measurements) / sizeof(measurements[0]); i++) {
+    MeasurementInfo_Action_Item * meas_item =
+        (MeasurementInfo_Action_Item *)calloc(1, sizeof(MeasurementInfo_Action_Item));
+    meas_item->measName = cp_str_to_ba(measurements[i]);
+    ASN_SEQUENCE_ADD (&report_style->measInfo_Action_List.list, meas_item);
+  }
 
  ranfunc_desc->ric_ReportStyle_List =
        (E2SM_KPM_RANfunction_Description::E2SM_KPM_RANfunction_Description__ric_ReportStyle_List *)
