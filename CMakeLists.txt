@@ -58,10 +58,12 @@ build_lib(
 )
 
 # Alternatively, create the oran-interface library manually
+# IMPORTANT: Use PUBLIC linkage for e2sim so that executables linking against
+# oran-interface will also link against e2sim (required for static libraries)
 add_library(oran-interface STATIC ${source_files} ${header_files})
 target_include_directories(oran-interface PUBLIC ${E2SIM_INCLUDE_DIR})
 target_link_directories(oran-interface PUBLIC ${E2SIM_LIB_DIR})
-target_link_libraries(oran-interface e2sim)
+target_link_libraries(oran-interface PUBLIC e2sim)
 
 # Specify the install directory for ns3 includes
 set(NS3_INSTALL_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include/ns3)
