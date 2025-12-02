@@ -155,8 +155,8 @@ public:
   static uint64_t octet_string_to_int_64 (OCTET_STRING_t asn);
   static OCTET_STRING_t int_64_to_octet_string (uint64_t value);
 
-  void *m_buffer;
-  size_t m_size;
+  void *m_buffer = nullptr;  // Initialize to prevent crash on early return
+  size_t m_size = 0;
 
 private:
   /**
@@ -308,8 +308,8 @@ public:
                         const std::map<std::string, std::any> &s_map);
   ~KpmIndicationMessage ();
 
-  void *m_buffer;
-  size_t m_size;
+  void *m_buffer = nullptr;  // Initialize to prevent crash on early return
+  size_t m_size = 0;
   // ======================================================================================
   BIT_STRING_t
   cp_amf_region_id_to_bit_string (uint8_t src)

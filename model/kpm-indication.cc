@@ -109,7 +109,12 @@ KpmIndicationHeader::KpmIndicationHeader (GlobalE2nodeType nodeType,
 KpmIndicationHeader::~KpmIndicationHeader ()
 {
   NS_LOG_FUNCTION (this);
-  free (m_buffer);
+  NS_LOG_DEBUG ("~KpmIndicationHeader: m_buffer=" << m_buffer << ", m_size=" << m_size);
+  if (m_buffer != nullptr)
+    {
+      free (m_buffer);
+    }
+  m_buffer = nullptr;
   m_size = 0;
 }
 
@@ -382,7 +387,12 @@ KpmIndicationMessage::KpmIndicationMessage (KpmIndicationMessageValues values,
 
 KpmIndicationMessage::~KpmIndicationMessage ()
 {
-  free (m_buffer);
+  NS_LOG_DEBUG ("~KpmIndicationMessage: m_buffer=" << m_buffer << ", m_size=" << m_size);
+  if (m_buffer != nullptr)
+    {
+      free (m_buffer);
+    }
+  m_buffer = nullptr;
   m_size = 0;
 }
 
@@ -1215,15 +1225,13 @@ KpmIndicationMessage::FillAndEncodeKpmIndicationMessage (
           }
         else
           {
-            // return;
-            E2SM_KPM_IndicationMessage_Format1_t *kpm_ind_message_format1 =
-                (E2SM_KPM_IndicationMessage_Format1_t *) calloc (
-                    1, sizeof (E2SM_KPM_IndicationMessage_Format1_t));
-
-            FillKpmIndicationMessageFormat1 (kpm_ind_message_format1);
-
-            FillKpmIndicationMessageFormat3 (kpm_ind_message_format3, kpm_ind_message_format1,
-                                             values);
+            // Skip sending indication when there are no UE indications
+            // This prevents sending fake/placeholder data that would confuse the xApp
+            printf ("[KPM] DEBUG: No UE indications for Format 3, skipping encode (m_buffer stays nullptr)\n");
+            NS_LOG_DEBUG ("No UE indications to report for Format 3, skipping encode");
+            free (kpm_ind_message_format3);
+            free (ind_message);
+            return;
           }
 
         ind_message->indicationMessage_formats.present =
